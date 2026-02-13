@@ -1,0 +1,154 @@
+<div class="container-fluid bg-yellow-theme min-vh-100 d-flex flex-column">
+
+    <!-- Header: Search & Back Button -->
+    <div class="d-flex justify-content-between align-items-center p-4">
+
+        <!-- Search Bar -->
+        <div class="flex-grow-1 d-flex justify-content-center">
+            <div class="position-relative w-100" style="max-width: 500px;">
+                <input type="text" class="form-control search-input" placeholder="Buscar paciente..."
+                    [formControl]="searchControl">
+                <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y me-3 text-muted"></i>
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="ms-3">
+            <i class="bi bi-arrow-return-left btn-back" (click)="goBack()" title="Volver"></i>
+        </div>
+    </div>
+
+    <!-- Patient List -->
+    <div class="container patient-list-container flex-grow-1">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+
+                @if (patients$ | async; as patients) {
+
+                <!-- Verificación extra de seguridad -->
+                @if (patients && patients.length === 0) {
+                <div class="text-center mt-5 text-purple">
+                    <p class="fs-4">No se encontraron pacientes.</p>
+                </div>
+                }
+
+                @for (patient of patients; track patient.id) {
+                <div class="patient-card p-3 d-flex justify-content-between align-items-center"
+                    (click)="navigateToDetail(patient.id)" style="cursor: pointer;">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-purple text-white rounded-circle d-flex justify-content-center align-items-center me-3"
+                            style="width: 50px; height: 50px; font-size: 1.2rem;">
+                            {{ getInitials(patient.nombre, patient.apellidos) }}
+                        </div>
+                        <div>
+                            <h5 class="mb-0 text-purple fw-bold">{{ patient.nombre }} {{ patient.apellidos }}</h5>
+                            <small class="text-muted">ID: {{ patient.id }}</small>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center">
+                        <span class="fs-5 me-3 text-dark fw-bold">{{ patient.telefono || 'Sin teléfono' }}</span>
+                        <i class="bi bi-telephone-fill text-purple"></i>
+                    </div>
+                </div>
+                }
+
+                } @else {
+                <div class="text-center mt-5">
+                    <div class="spinner-border text-purple" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                </div>
+                }
+
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTÓN FLOTANTE NUEVO PACIENTE -->
+    <button class="btn-float-add" (click)="openModal()" title="Nuevo Paciente">
+        <i class="bi bi-plus-lg"></i>
+    </button>
+
+    <!-- MODAL (Overlay + Content) -->
+    @if (isModalOpen) {
+    <div class="modal-overlay">
+        <div class="modal-content-custom">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="text-purple fw-bold mb-0">Nuevo Paciente</h3>
+                <button class="btn-close" (click)="closeModal()"></button>
+            </div>
+
+            <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
+
+                <div class="row">
+                    <!-- Nombre -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-purple fw-bold">Nombre *</label>
+                        <input type="text" class="form-control" formControlName="nombre" placeholder="Ej. Juan"
+                            [class.is-invalid]="patientForm.get('nombre')?.invalid && patientForm.get('nombre')?.touched">
+                    </div>
+                    <!-- Apellidos -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-purple fw-bold">Apellidos *</label>
+                        <input type="text" class="form-control" formControlName="apellidos"
+                            placeholder="Ej. Pérez García"
+                            [class.is-invalid]="patientForm.get('apellidos')?.invalid && patientForm.get('apellidos')?.touched">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Teléfono -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-purple fw-bold">Teléfono *</label>
+                        <input type="tel" class="form-control" formControlName="telefono" placeholder="Ej. 666777888"
+                            [class.is-invalid]="patientForm.get('telefono')?.invalid && patientForm.get('telefono')?.touched">
+                        @if(patientForm.get('telefono')?.hasError('pattern')) {
+                        <div class="invalid-feedback">Solo números, sin espacios.</div>
+                        }
+                    </div>
+                    <!-- Email -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-purple fw-bold">Email Tutor</label>
+                        <input type="email" class="form-control" formControlName="emailTutor"
+                            placeholder="ejemplo@email.com">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Fecha Nacimiento -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-purple fw-bold">Fecha Nacimiento *</label>
+                        <input type="date" class="form-control" formControlName="fechaNacimiento"
+                            [class.is-invalid]="patientForm.get('fechaNacimiento')?.invalid && patientForm.get('fechaNacimiento')?.touched">
+                    </div>
+                    <!-- Sexo -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-purple fw-bold">Sexo</label>
+                        <select class="form-select" formControlName="sexo">
+                            <option value="Hombre">Hombre</option>
+                            <option value="Mujer">Mujer</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Nombre Tutor (Opcional) -->
+                <div class="mb-4">
+                    <label class="form-label text-purple fw-bold">Nombre Tutor (si es menor)</label>
+                    <input type="text" class="form-control" formControlName="nombreTutor"
+                        placeholder="Ej. Padre o Madre">
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-secondary-custom" (click)="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary-custom w-50" [disabled]="patientForm.invalid">
+                        <i class="bi bi-person-plus-fill me-2"></i>Guardar Paciente
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    }
+
+</div>

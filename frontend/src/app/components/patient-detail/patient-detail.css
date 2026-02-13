@@ -1,0 +1,163 @@
+:host {
+    display: block;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    /* Fondo suave para el detalle */
+}
+
+/* Header Styles */
+.detail-header {
+    background: linear-gradient(135deg, #4a148c 0%, #7c43bd 100%);
+    /* Degradado morado */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.avatar-large {
+    width: 64px;
+    height: 64px;
+    font-size: 1.5rem;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Action Buttons */
+.btn-action {
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.2s;
+}
+
+.btn-action:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+/* Highlight "Back" button */
+.btn-back {
+    background: #ffd700;
+    /* Amarillo solicitado */
+    color: #4a148c;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.btn-back:hover {
+    background: #ffea00;
+    color: #38006b;
+    transform: scale(1.1);
+}
+
+.btn-delete:hover {
+    background: #ff5252;
+    /* Rojo al pasar el mouse por eliminar */
+}
+
+/* Modal Styles (Reused/Adapted) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: fadeIn 0.2s;
+}
+
+.modal-content-custom {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    /* Rebote suave */
+}
+
+.bg-danger-light {
+    border: 2px solid #ffcdd2;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Graph interaction */
+.graph-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: zoom-in;
+}
+
+.graph-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.graph-zoom-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s;
+}
+
+.graph-zoomed {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    height: 80%;
+    max-width: 1200px;
+    position: relative;
+    animation: zoomIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

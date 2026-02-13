@@ -1,0 +1,225 @@
+<div class="container py-4">
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-purple fw-bold mb-0">Nueva Revisión</h2>
+        <button class="btn btn-light text-purple fw-bold" (click)="cancel()">
+            <i class="bi bi-x-circle me-2"></i>Cancelar
+        </button>
+    </div>
+
+    <form [formGroup]="revisionForm" (ngSubmit)="onSubmit()" class="animate__animated animate__fadeIn">
+
+        <!-- SECCIÓN 1: GENERAL -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-purple text-white fw-bold">
+                <i class="bi bi-calendar-event me-2"></i>Datos Generales
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold text-muted">Fecha Revisión</label>
+                        <input type="date" class="form-control" formControlName="fechaRevision">
+                    </div>
+                    <!-- OPTOMETRISTA -->
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold text-purple">Optometrista *</label>
+                        <select class="form-select" formControlName="optometristaId"
+                            [class.is-invalid]="revisionForm.get('optometristaId')?.invalid && revisionForm.get('optometristaId')?.touched">
+                            <option [ngValue]="null" disabled>Seleccionar...</option>
+                            @for (opt of optometristas; track opt.id) {
+                            <option [value]="opt.id">{{ opt.nombreCompleto }} ({{ opt.numeroColegiado }})</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">Debes seleccionar un optometrista.</div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold text-muted">Anamnesis / Motivo Consulta</label>
+                        <textarea class="form-control" rows="1" formControlName="anamnesis"
+                            placeholder="Describir motivo..."></textarea>
+                    </div>
+                </div>
+
+                <!-- TRATAMIENTO -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-muted">Tratamiento Prescrito</label>
+                    <select class="form-select" formControlName="tratamientoActual">
+                        <option value="NINGUNO">Ninguno</option>
+                        <optgroup label="Gafas Control Miopía">
+                            <option value="GAFAS_MIYOSMART">Gafas MiYOSMART (Hoya)</option>
+                            <option value="GAFAS_STELLEST">Gafas Stellest (Essilor)</option>
+                            <option value="GAFAS_MYOSLOW">Gafas MyoSlow (Indo)</option>
+                            <option value="GAFAS">Otras Gafas</option>
+                        </optgroup>
+                        <optgroup label="Lentillas Control Miopía">
+                            <option value="LENTILLAS_MISIGHT">MiSight (CooperVision)</option>
+                            <option value="LENTILLAS_ORTOK">Orto-K</option>
+                            <option value="LENTILLAS">Otras Lentillas</option>
+                        </optgroup>
+                        <optgroup label="Farmacológico">
+                            <option value="ATROPINA_001">Atropina 0.01%</option>
+                            <option value="ATROPINA_005">Atropina 0.05%</option>
+                            <option value="ATROPINA">Atropina (Otra dosis)</option>
+                        </optgroup>
+                        <option value="COMBINADO">Combinado</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 2: REFRACCIÓN -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white text-purple fw-bold border-bottom">
+                <i class="bi bi-eye me-2"></i>Refracción
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <!-- OJO DERECHO -->
+                    <div class="col-md-6 border-end">
+                        <h6 class="text-center text-primary fw-bold mb-3">Ojo Derecho (OD)</h6>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label class="small text-muted">Esfera</label>
+                                <input type="number" step="0.25" class="form-control text-center"
+                                    formControlName="odEsfera">
+                            </div>
+                            <div class="col-6">
+                                <label class="small text-muted">Cilindro</label>
+                                <input type="number" step="0.25" class="form-control text-center"
+                                    formControlName="odCilindro">
+                            </div>
+                            <div class="col-6">
+                                <label class="small text-muted">Eje (°)</label>
+                                <input type="number" class="form-control text-center" formControlName="odEje">
+                            </div>
+                            <div class="col-6">
+                                <label class="small text-muted">A. Visual</label>
+                                <input type="number" step="0.1" class="form-control text-center bg-light"
+                                    formControlName="odAgudezaVisual" placeholder="1.0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- OJO IZQUIERDO -->
+                    <div class="col-md-6">
+                        <h6 class="text-center text-primary fw-bold mb-3">Ojo Izquierdo (OI)</h6>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label class="small text-muted">Esfera</label>
+                                <input type="number" step="0.25" class="form-control text-center"
+                                    formControlName="oiEsfera">
+                            </div>
+                            <div class="col-6">
+                                <label class="small text-muted">Cilindro</label>
+                                <input type="number" step="0.25" class="form-control text-center"
+                                    formControlName="oiCilindro">
+                            </div>
+                            <div class="col-6">
+                                <label class="small text-muted">Eje (°)</label>
+                                <input type="number" class="form-control text-center" formControlName="oiEje">
+                            </div>
+                            <div class="col-6">
+                                <label class="small text-muted">A. Visual</label>
+                                <input type="number" step="0.1" class="form-control text-center bg-light"
+                                    formControlName="oiAgudezaVisual" placeholder="1.0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3: BIOMETRÍA -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white text-purple fw-bold border-bottom">
+                <i class="bi bi-rulers me-2"></i>Biometría
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <!-- OJO DERECHO -->
+                    <div class="col-md-6 border-end">
+                        <h6 class="text-center text-muted fw-bold mb-3">Ojo Derecho (OD)</h6>
+                        <div class="row g-2">
+                            <div class="col-4">
+                                <label class="small text-muted">K1</label>
+                                <input type="number" step="0.01" class="form-control text-center"
+                                    formControlName="odK1">
+                            </div>
+                            <div class="col-4">
+                                <label class="small text-muted">K2</label>
+                                <input type="number" step="0.01" class="form-control text-center"
+                                    formControlName="odK2">
+                            </div>
+                            <div class="col-4">
+                                <label class="small text-muted fw-bold">L. Axial</label>
+                                <input type="number" step="0.01" class="form-control text-center border-primary"
+                                    formControlName="odLongitudAxial">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- OJO IZQUIERDO -->
+                    <div class="col-md-6">
+                        <h6 class="text-center text-muted fw-bold mb-3">Ojo Izquierdo (OI)</h6>
+                        <div class="row g-2">
+                            <div class="col-4">
+                                <label class="small text-muted">K1</label>
+                                <input type="number" step="0.01" class="form-control text-center"
+                                    formControlName="oiK1">
+                            </div>
+                            <div class="col-4">
+                                <label class="small text-muted">K2</label>
+                                <input type="number" step="0.01" class="form-control text-center"
+                                    formControlName="oiK2">
+                            </div>
+                            <div class="col-4">
+                                <label class="small text-muted fw-bold">L. Axial</label>
+                                <input type="number" step="0.01" class="form-control text-center border-primary"
+                                    formControlName="oiLongitudAxial">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 4: VISIÓN BINOCULAR -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white text-purple fw-bold border-bottom">
+                <i class="bi bi-binoculars me-2"></i>Visión Binocular
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="small text-muted">Foria Lejos</label>
+                        <input type="text" class="form-control" formControlName="foriaLejos" placeholder="Ej: 2 ESO">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="small text-muted">Foria Cerca</label>
+                        <input type="text" class="form-control" formControlName="foriaCerca" placeholder="Ej: 6 EXO">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small text-muted">PPC (cm)</label>
+                        <input type="number" class="form-control" formControlName="ppc">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small text-muted">MEM</label>
+                        <input type="number" step="0.25" class="form-control" formControlName="mem">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small text-muted">Stereopsis</label>
+                        <input type="number" class="form-control" formControlName="stereopsis">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="d-flex justify-content-end gap-3 pb-5">
+            <button type="button" class="btn btn-secondary-custom px-4" (click)="cancel()">Cancelar</button>
+            <button type="submit" class="btn btn-primary-custom px-5 py-2 shadow" [disabled]="revisionForm.invalid">
+                <i class="bi bi-save-fill me-2"></i>Guardar Revisión
+            </button>
+        </div>
+
+    </form>
+</div>

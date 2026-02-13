@@ -1,0 +1,68 @@
+/* Global Styles */
+body,
+html {
+  height: 100%;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #4B0082;
+  /* Purple background */
+  color: white;
+}
+
+.bg-purple {
+  background-color: #4B0082 !important;
+}
+
+.text-purple {
+  color: #4B0082 !important;
+}
+
+.btn-yellow {
+  background-color: #FFD700;
+  color: #4B0082;
+  font-weight: bold;
+  border: none;
+}
+
+.btn-yellow:hover {
+  background-color: #FFC107;
+  color: #4B0082;
+}
+
+.card-custom {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Global Button Styles */
+.btn-primary-custom {
+  background-color: #4a148c;
+  color: white !important;
+  /* Force text color */
+  border-radius: 10px;
+  padding: 10px 0;
+  font-weight: bold;
+  border: none;
+  transition: background 0.2s;
+}
+
+.btn-primary-custom:hover {
+  background-color: #38006b;
+  color: white !important;
+}
+
+.btn-secondary-custom {
+  background-color: #f0f0f0;
+  color: #333 !important;
+  border-radius: 10px;
+  padding: 10px 20px;
+  border: none;
+  font-weight: bold;
+}
+
+.btn-secondary-custom:hover {
+  background-color: #e0e0e0;
+  color: #333 !important;
+}

@@ -1,0 +1,27 @@
+/* Button Styling */
+.btn-yellow {
+    background-color: #ffd700;
+    color: #4a148c;
+    font-weight: bold;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+.btn-yellow:hover {
+    background-color: #ffea00;
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
+
+.btn-outline-light {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border-width: 2px;
+}
+
+.btn-outline-light:hover {
+    transform: scale(1.05) translateY(-2px);
+    background-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}

@@ -1,0 +1,46 @@
+.card {
+    border-radius: 12px;
+}
+
+.text-purple {
+    color: #6f42c1;
+}
+
+.bg-purple {
+    background-color: #6f42c1;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #6f42c1;
+    box-shadow: 0 0 0 0.25rem rgba(111, 66, 193, 0.25);
+}
+
+.btn-primary-custom {
+    background-color: #6f42c1;
+    border-color: #6f42c1;
+    color: white;
+    font-weight: 500;
+}
+
+.btn-primary-custom:hover {
+    background-color: #5a32a3;
+    border-color: #5a32a3;
+}
+
+.btn-secondary-custom {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    color: #6c757d;
+}
+
+.btn-secondary-custom:hover {
+    background-color: #e2e6ea;
+    color: #495057;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

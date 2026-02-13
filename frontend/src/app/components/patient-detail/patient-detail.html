@@ -1,0 +1,359 @@
+<div class="patient-detail-container">
+    @if (patient) {
+    <!-- HEADER -->
+    <header class="detail-header d-flex justify-content-between align-items-center p-4">
+        <div class="d-flex align-items-center gap-3">
+            <div
+                class="avatar-large bg-white text-purple fw-bold rounded-circle d-flex align-items-center justify-content-center shadow">
+                {{ getInitials(patient.nombre, patient.apellidos) }}
+            </div>
+            <div>
+                <h1 class="m-0 text-white fw-bold">{{ patient.nombre }} {{ patient.apellidos }}</h1>
+                <p class="m-0 text-white opacity-75">
+                    <i class="bi bi-telephone-fill me-1"></i> {{ patient.telefono }}
+                    <span class="mx-2">|</span>
+                    <i class="bi bi-cake2-fill me-1"></i> {{ patient.fechaNacimiento | date:'dd/MM/yyyy' }}
+                </p>
+            </div>
+        </div>
+
+        <!-- ICONS ACTION BAR -->
+        <div class="actions d-flex gap-3">
+            <!-- Volver (Destacado) -->
+            <button (click)="goBack()" class="btn btn-action btn-back" title="Volver">
+                <i class="bi bi-arrow-left-circle-fill"></i>
+            </button>
+
+            <!-- Editar -->
+            <button (click)="editPatient()" class="btn btn-action btn-edit" title="Editar">
+                <i class="bi bi-pencil-fill"></i>
+            </button>
+
+            <!-- Eliminar -->
+            <button (click)="confirmDelete()" class="btn btn-action btn-delete" title="Eliminar">
+                <i class="bi bi-trash-fill"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- BODY CONTENT (Placeholder for Revisions) -->
+    <!-- BODY CONTENT (Revisions & Graphs) -->
+    <div class="detail-body p-4">
+
+        <!-- REVISIONS SECTION -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-purple fw-bold m-0">Historial de Revisiones</h4>
+                    <button class="btn btn-primary-custom btn-sm px-3 shadow-sm" (click)="goToNewRevision()">
+                        <i class="bi bi-plus-lg me-2"></i>Nueva Revisión
+                    </button>
+                </div>
+
+                <!-- Horizontal Scrollable List -->
+                <div class="d-flex overflow-auto pb-3 gap-3" style="white-space: nowrap;">
+                    @for (rev of revisions; track rev.id) {
+                    <div class="card p-3 shadow-sm border-0 d-inline-block text-center"
+                        style="min-width: 150px; cursor: pointer; transition: transform 0.2s;"
+                        [class.bg-purple]="selectedRevision?.id === rev.id"
+                        [class.text-white]="selectedRevision?.id === rev.id"
+                        [class.bg-white]="selectedRevision?.id !== rev.id" (click)="selectRevision(rev)">
+                        <h5 class="fw-bold mb-1">{{ rev.fechaRevision | date:'dd/MM/yyyy' }}</h5>
+                        <small>ID: {{ rev.id }}</small>
+                    </div>
+                    } @empty {
+                    <div
+                        class="alert alert-light border w-100 text-center text-muted d-flex flex-column align-items-center justify-content-center py-4">
+                        <i class="bi bi-info-circle fs-3 mb-2"></i>
+                        <p class="mb-3">No hay revisiones registradas.</p>
+                        <button class="btn btn-primary-custom btn-sm px-4" (click)="goToNewRevision()">
+                            <i class="bi bi-plus-lg me-2"></i>Nueva Revisión
+                        </button>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- SPLIT VIEW DETAILS -->
+        @if (selectedRevision) {
+        <div class="row animate__animated animate__fadeIn">
+            <!-- LEFT: Revision Details (FULL DATA) -->
+            <div class="col-md-5 mb-4">
+                <div class="card shadow border-0 h-100">
+                    <div class="card-header bg-purple text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Detalle Revisión</h5>
+                        <button class="btn btn-sm btn-light text-purple fw-bold">
+                            <i class="bi bi-pencil-fill me-1"></i>Editar
+                        </button>
+                    </div>
+                    <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+                        <!-- General -->
+                        <div class="mb-3">
+                            <p class="mb-1"><strong>Fecha:</strong> {{ selectedRevision.fechaRevision |
+                                date:'dd/MM/yyyy' }}</p>
+                            <p class="mb-1"><strong>Anamnesis:</strong> {{ selectedRevision.anamnesis || 'Sin datos' }}
+                            </p>
+                        </div>
+
+                        <hr>
+                        <!-- 1. Refracción -->
+                        <h6 class="text-purple fw-bold mb-2"><i class="bi bi-eye me-2"></i>Refracción</h6>
+                        <div class="table-responsive mb-3">
+                            <table class="table table-sm table-striped">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Ojo</th>
+                                        <th>Esfera</th>
+                                        <th>Cilindro</th>
+                                        <th>Eje</th>
+                                        <th>AV</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>OD</td>
+                                        <td>{{ selectedRevision.odEsfera }}</td>
+                                        <td>{{ selectedRevision.odCilindro }}</td>
+                                        <td>{{ selectedRevision.odEje }}°</td>
+                                        <td>{{ selectedRevision.odAgudezaVisual }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>OI</td>
+                                        <td>{{ selectedRevision.oiEsfera }}</td>
+                                        <td>{{ selectedRevision.oiCilindro }}</td>
+                                        <td>{{ selectedRevision.oiEje }}°</td>
+                                        <td>{{ selectedRevision.oiAgudezaVisual }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <hr>
+                        <!-- 2. Biometría -->
+                        <h6 class="text-purple fw-bold mb-2"><i class="bi bi-rulers me-2"></i>Biometría</h6>
+                        <div class="table-responsive mb-3">
+                            <table class="table table-sm table-striped">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Ojo</th>
+                                        <th>K1</th>
+                                        <th>K2</th>
+                                        <th>L. Axial</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>OD</td>
+                                        <td>{{ selectedRevision.odK1 }}</td>
+                                        <td>{{ selectedRevision.odK2 }}</td>
+                                        <td>{{ selectedRevision.odLongitudAxial }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>OI</td>
+                                        <td>{{ selectedRevision.oiK1 }}</td>
+                                        <td>{{ selectedRevision.oiK2 }}</td>
+                                        <td>{{ selectedRevision.oiLongitudAxial }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <hr>
+                        <!-- 3. Visión Binocular -->
+                        <h6 class="text-purple fw-bold mb-2"><i class="bi bi-binoculars me-2"></i>Visión Binocular</h6>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <small class="text-muted d-block">Foria Lejos</small>
+                                <strong>{{ selectedRevision.foriaLejos || '-' }}</strong>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted d-block">Foria Cerca</small>
+                                <strong>{{ selectedRevision.foriaCerca || '-' }}</strong>
+                            </div>
+                            <div class="col-4">
+                                <small class="text-muted d-block">PPC</small>
+                                <strong>{{ selectedRevision.ppc || '-' }}</strong>
+                            </div>
+                            <div class="col-4">
+                                <small class="text-muted d-block">MEM</small>
+                                <strong>{{ selectedRevision.mem || '-' }}</strong>
+                            </div>
+                            <div class="col-4">
+                                <small class="text-muted d-block">AC/A</small>
+                                <strong>{{ selectedRevision.ac_a || '-' }}</strong>
+                            </div>
+                            <div class="col-12">
+                                <small class="text-muted d-block">Stereopsis</small>
+                                <strong>{{ selectedRevision.stereopsis || '-' }} seg</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Graphs & Diagnosis -->
+            <div class="col-md-7 mb-4">
+                <!-- Graph Placeholder (Clickable) -->
+                <div class="card shadow border-0 mb-3 graph-card" (click)="toggleGraphZoom()">
+                    <div class="card-header bg-white text-purple fw-bold d-flex justify-content-between">
+                        <span><i class="bi bi-graph-up me-2"></i>Evolución Percentil</span>
+                        <small class="text-muted"><i class="bi bi-zoom-in me-1"></i>Clic para ampliar</small>
+                    </div>
+                    <div class="card-body text-center bg-light graph-body"
+                        style="height: 250px; display: flex; align-items: center; justify-content: center; position: relative;">
+                        <i class="bi bi-bar-chart-line text-muted" style="font-size: 4rem;"></i>
+                        <p class="text-muted ms-3">Gráfica de Evolución</p>
+                    </div>
+                </div>
+
+                <!-- Diagnosis Card (Highlighted) -->
+                <div class="card shadow border-0 border-start border-4 border-danger">
+                    <div class="card-body bg-danger-subtle">
+                        <h5 class="text-danger fw-bold"><i class="bi bi-heart-pulse-fill me-2"></i>Diagnóstico y Alertas
+                        </h5>
+
+                        <div class="mb-2">
+                            <span class="badge bg-warning text-dark fs-6 mb-2">{{ selectedRevision.tratamientoActual ||
+                                'Ninguno' }}</span>
+                        </div>
+
+                        @if (selectedRevision.alertasSistema) {
+                        <div class="alert alert-danger d-flex align-items-center mb-0" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"></i>
+                            <div>
+                                <strong>¡Atención!</strong> {{ selectedRevision.alertasSistema }}
+                            </div>
+                        </div>
+                        } @else {
+                        <p class="text-success fw-bold mb-0">
+                            <i class="bi bi-check-circle-fill me-1"></i> Sin alertas de progresión rápida.
+                        </p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+
+    } @else {
+    <div class="d-flex justify-content-center align-items-center min-vh-100">
+        <div class="spinner-border text-purple" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+    }
+</div>
+
+<!-- DELETE CONFIRMATION MODAL -->
+@if (isDeleteModalOpen) {
+<div class="modal-overlay" (click)="cancelDelete()">
+    <div class="modal-content-custom bg-danger-light" (click)="$event.stopPropagation()">
+        <div class="text-center">
+            <i class="bi bi-exclamation-triangle-fill text-danger fs-1 mb-3"></i>
+            <h3 class="text-danger fw-bold mb-3">¿Eliminar Paciente?</h3>
+            <p class="mb-4">
+                Estás a punto de eliminar a <strong>{{ patient?.nombre }} {{ patient?.apellidos }}</strong>.
+                <br>Esta acción no se puede deshacer.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <button class="btn btn-secondary-custom" (click)="cancelDelete()">Cancelar</button>
+                <button class="btn btn-danger fw-bold px-4" (click)="deletePatient()">Sí, Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+<!-- EDIT MODAL (Reusing style) -->
+@if (isEditModalOpen) {
+<div class="modal-overlay">
+    <div class="modal-content-custom bg-white">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="text-purple fw-bold mb-0">Editar Paciente</h3>
+            <button class="btn-close" (click)="closeEditModal()"></button>
+        </div>
+
+        <form [formGroup]="editForm" (ngSubmit)="onSaveEdit()">
+            <div class="row">
+                <!-- Nombre -->
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-purple fw-bold">Nombre *</label>
+                    <input type="text" class="form-control" formControlName="nombre"
+                        [class.is-invalid]="editForm.get('nombre')?.invalid && editForm.get('nombre')?.touched">
+                </div>
+                <!-- Apellidos -->
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-purple fw-bold">Apellidos *</label>
+                    <input type="text" class="form-control" formControlName="apellidos"
+                        [class.is-invalid]="editForm.get('apellidos')?.invalid && editForm.get('apellidos')?.touched">
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Teléfono -->
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-purple fw-bold">Teléfono *</label>
+                    <input type="tel" class="form-control" formControlName="telefono"
+                        [class.is-invalid]="editForm.get('telefono')?.invalid && editForm.get('telefono')?.touched">
+                    @if(editForm.get('telefono')?.hasError('pattern')) {
+                    <div class="invalid-feedback">Solo números.</div>
+                    }
+                </div>
+                <!-- Email -->
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-purple fw-bold">Email Tutor</label>
+                    <input type="email" class="form-control" formControlName="emailTutor">
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Fecha Nacimiento -->
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-purple fw-bold">Fecha Nacimiento *</label>
+                    <input type="date" class="form-control" formControlName="fechaNacimiento">
+                </div>
+                <!-- Sexo -->
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-purple fw-bold">Sexo</label>
+                    <select class="form-select" formControlName="sexo">
+                        <option value="Hombre">Hombre</option>
+                        <option value="Mujer">Mujer</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label text-purple fw-bold">Nombre Tutor</label>
+                <input type="text" class="form-control" formControlName="nombreTutor">
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-secondary-custom" (click)="closeEditModal()">Cancelar</button>
+                <button type="submit" class="btn btn-primary-custom w-50" [disabled]="editForm.invalid">
+                    <i class="bi bi-save me-2"></i>Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+}
+
+<!-- GRAPH ZOOM OVERLAY -->
+@if (isGraphZoomed) {
+<div class="graph-zoom-overlay" (click)="toggleGraphZoom()">
+    <div class="graph-zoomed" (click)="$event.stopPropagation()">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="text-purple fw-bold m-0"><i class="bi bi-graph-up me-2"></i>Evolución Detallada</h3>
+            <button class="btn-close fs-4" (click)="toggleGraphZoom()"></button>
+        </div>
+        <!-- Placeholder Expanded -->
+        <div class="w-100 h-100 bg-light rounded d-flex flex-column align-items-center justify-content-center p-5">
+            <i class="bi bi-bar-chart-line text-muted" style="font-size: 8rem;"></i>
+            <h4 class="text-muted mt-3">Gráfica Interactiva Ampliada</h4>
+            <p class="text-muted">Aquí se mostrará la evolución detallada de la Línea Axial y Refracción.</p>
+        </div>
+    </div>
+</div>
+}

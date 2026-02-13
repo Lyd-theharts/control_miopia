@@ -1,0 +1,84 @@
+<div class="container-fluid bg-purple min-vh-100 d-flex flex-column">
+  <!-- Top Left: New User Button -->
+  <div class="p-3 position-absolute top-0 start-0">
+    <button (click)="toggleRegisterModal()" class="btn btn-outline-light">
+      <i class="bi bi-person-plus-fill me-2"></i>Nuevo Usuario
+    </button>
+  </div>
+
+  <!-- Centered Login Form -->
+  <div class="row flex-grow-1 justify-content-center align-items-center">
+    <div class="col-md-4 col-sm-8 col-10">
+      <div class="card card-custom">
+        <div class="card-body text-center">
+          <h2 class="text-purple mb-4">Iniciar Sesión</h2>
+
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3 text-start">
+              <label for="username" class="form-label text-purple">Usuario</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light text-purple"><i class="bi bi-person"></i></span>
+                <input type="text" class="form-control" id="username" formControlName="username"
+                  placeholder="Ingrese su usuario">
+              </div>
+            </div>
+
+            <div class="mb-4 text-start">
+              <label for="password" class="form-label text-purple">Contraseña</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light text-purple"><i class="bi bi-lock"></i></span>
+                <input type="password" class="form-control" id="password" formControlName="password"
+                  placeholder="Ingrese su contraseña">
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-yellow w-100 py-2" [disabled]="loginForm.invalid">
+              INGRESAR
+            </button>
+
+            <p *ngIf="error" class="text-danger mt-3">{{ error }}</p>
+            <p *ngIf="successMessage" class="text-success mt-3">{{ successMessage }}</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Registration Modal Overlay -->
+  <div class="modal fade show d-block" tabindex="-1" *ngIf="showRegisterModal"
+    style="background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-purple text-white">
+          <h5 class="modal-title">Registro de Nueva Clínica</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="toggleRegisterModal()"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+            <div class="mb-3">
+              <label class="form-label">Nombre Comercial</label>
+              <input type="text" class="form-control" formControlName="nombreComercial" placeholder="Ej: Óptica Visión">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">CIF</label>
+              <input type="text" class="form-control" formControlName="cif" placeholder="Ej: B12345678">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Usuario</label>
+              <input type="text" class="form-control" formControlName="username" placeholder="Usuario para login">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Contraseña</label>
+              <input type="password" class="form-control" formControlName="password" placeholder="Contraseña segura">
+            </div>
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-yellow" [disabled]="registerForm.invalid">
+                Registrar Clínica
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
