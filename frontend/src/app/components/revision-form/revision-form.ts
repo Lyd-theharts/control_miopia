@@ -1,7 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { RevisionService } from '../../services/revision.service';
 import { AuthService } from '../../services/auth';
 import { Revision, Optometrista } from '../../common/interfaces';
@@ -14,20 +14,52 @@ import { Revision, Optometrista } from '../../common/interfaces';
     styleUrls: ['./revision-form.css']
 })
 export class RevisionFormComponent implements OnInit {
+    // Inputs de Ruta (Component Input Binding)
+    @Input('id') pacienteIdInput!: string;
+    @Input('revisionId') revisionIdInput?: string;
+
     private fb = inject(FormBuilder);
-    private route = inject(ActivatedRoute);
     private router = inject(Router);
     private revisionService = inject(RevisionService);
     private authService = inject(AuthService);
 
     pacienteId!: number;
+    revisionId?: number;
+    isEditing = false;
     revisionForm!: FormGroup;
     optometristas: Optometrista[] = [];
 
     ngOnInit() {
-        this.pacienteId = Number(this.route.snapshot.paramMap.get('id'));
-        this.initForm();
-        this.loadOptometristas();
+        console.log('RevisionFormComponent inicializado (Input Binding)');
+        console.log('Inputs recibidos - Paciente:', this.pacienteIdInput, 'Revisión:', this.revisionIdInput);
+
+        if (this.pacienteIdInput) {
+            this.pacienteId = Number(this.pacienteIdInput);
+            this.initForm();
+            this.loadOptometristas();
+        } else {
+            console.error('Error: No se recibió ID de paciente');
+            // Podríamos redirigir o mostrar error
+        }
+
+        if (this.revisionIdInput) {
+            this.isEditing = true;
+            this.revisionId = Number(this.revisionIdInput);
+            this.loadRevisionData(this.revisionId);
+        }
+    }
+
+    private loadRevisionData(id: number) {
+        this.revisionService.getRevisionById(id).subscribe({
+            next: (data) => {
+                console.log('Datos de revisión cargados:', data);
+                this.revisionForm.patchValue({
+                    ...data,
+                    optometristaId: data.optometrista?.id
+                });
+            },
+            error: (err) => console.error('Error cargando revisión:', err)
+        });
     }
 
     private loadOptometristas() {
@@ -91,22 +123,26 @@ export class RevisionFormComponent implements OnInit {
             const { optometristaId, ...restoDatos } = formValue;
 
             // Construir objeto Revision
-            const nuevaRevision: Revision = {
+            const revisionData: Revision = {
                 ...restoDatos,
                 paciente: { id: this.pacienteId },
                 optometrista: { id: Number(optometristaId) }
             };
 
-            console.log('Enviando revisión:', nuevaRevision);
+            const request$ = this.isEditing && this.revisionId
+                ? this.revisionService.updateRevision(this.revisionId, revisionData)
+                : this.revisionService.createRevision(revisionData);
 
-            this.revisionService.createRevision(nuevaRevision).subscribe({
+            console.log(this.isEditing ? 'Actualizando revisión:' : 'Creando revisión:', revisionData);
+
+            request$.subscribe({
                 next: (res) => {
-                    console.log('Revisión creada:', res);
+                    console.log('Operación exitosa:', res);
                     this.router.navigate(['/pacientes', this.pacienteId]);
                 },
                 error: (err) => {
-                    console.error('Error al crear revisión:', err);
-                    alert('Error al guardar la revisión: ' + (err.error?.message || err.statusText));
+                    console.error('Error en operación:', err);
+                    alert('Error al guardar: ' + (err.error?.message || err.statusText));
                 }
             });
         } else {

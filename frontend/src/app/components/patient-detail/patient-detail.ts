@@ -165,8 +165,19 @@ export class PatientDetailComponent implements OnInit {
     }
 
     goToNewRevision() {
+        console.log('Botón Nueva Revisión clickeado. Paciente ID:', this.patient?.id);
         if (this.patient?.id) {
-            this.router.navigate(['/pacientes', this.patient.id, 'nueva-revision']);
+            this.router.navigate(['/pacientes', this.patient.id, 'nueva-revision'])
+                .then(success => console.log('Navegación exitosa:', success))
+                .catch(err => console.error('Error en navegación:', err));
+        } else {
+            console.error('No se puede navegar: ID de paciente no encontrado');
+        }
+    }
+
+    goToEditRevision() {
+        if (this.patient?.id && this.selectedRevision?.id) {
+            this.router.navigate(['/pacientes', this.patient.id, 'revision', this.selectedRevision.id, 'editar']);
         }
     }
 }
