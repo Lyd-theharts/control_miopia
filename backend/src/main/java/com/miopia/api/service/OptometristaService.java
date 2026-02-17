@@ -21,4 +21,21 @@ public class OptometristaService {
     public Optometrista guardar(Optometrista opt) {
         return optometristaRepository.save(opt);
     }
+
+    // Actualizar trabajador
+    public Optometrista actualizar(Long id, Optometrista opt) {
+        return optometristaRepository.findById(id)
+                .map(existente -> {
+                    existente.setNombreCompleto(opt.getNombreCompleto());
+                    existente.setNumeroColegiado(opt.getNumeroColegiado());
+                    existente.setClinica(opt.getClinica());
+                    return optometristaRepository.save(existente);
+                })
+                .orElseThrow(() -> new RuntimeException("Optometrista no encontrado"));
+    }
+
+    // Eliminar trabajador
+    public void eliminar(Long id) {
+        optometristaRepository.deleteById(id);
+    }
 }

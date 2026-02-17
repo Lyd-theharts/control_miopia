@@ -13,9 +13,12 @@ export class DashboardComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
-  navigateToNewPatient() {
-    // Redirige a la lista de pacientes pero abriendo el modal automáticamente
-    this.router.navigate(['/pacientes'], { queryParams: { action: 'new' } });
+  navigate(route: string) {
+    if (route === 'nuevo-paciente') {
+      this.router.navigate(['/pacientes'], { queryParams: { action: 'new' } });
+    } else {
+      this.router.navigate(['/' + route]);
+    }
   }
 
   logout() {

@@ -136,11 +136,14 @@ export class RevisionFormComponent implements OnInit {
             console.log(this.isEditing ? 'Actualizando revisión:' : 'Creando revisión:', revisionData);
 
             request$.subscribe({
-                next: (res) => {
+                next: (res: Revision) => {
                     console.log('Operación exitosa:', res);
-                    this.router.navigate(['/pacientes', this.pacienteId]);
+                    // Navegar de vuelta al paciente seleccionando la revisión editada/creada
+                    this.router.navigate(['/pacientes', this.pacienteId], {
+                        queryParams: { selectedRevisionId: res.id }
+                    });
                 },
-                error: (err) => {
+                error: (err: any) => {
                     console.error('Error en operación:', err);
                     alert('Error al guardar: ' + (err.error?.message || err.statusText));
                 }

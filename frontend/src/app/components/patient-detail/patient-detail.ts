@@ -1,6 +1,6 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PatientService } from '../../services/patient.service';
 import { RevisionService } from '../../services/revision.service';
 import { AuthService } from '../../services/auth';
@@ -17,9 +17,10 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 export class PatientDetailComponent implements OnInit {
     @Input() id?: string;
 
-    private readonly router = inject(Router);
-    private readonly patientService = inject(PatientService);
-    private readonly revisionService = inject(RevisionService);
+    private route = inject(ActivatedRoute);
+    private router = inject(Router);
+    private patientService = inject(PatientService);
+    private revisionService = inject(RevisionService);
     private readonly authService = inject(AuthService);
 
     patient: Paciente | null = null;
@@ -43,7 +44,6 @@ export class PatientDetailComponent implements OnInit {
         if (this.id) {
             const patientId = Number(this.id);
             this.loadPatient(patientId);
-            this.loadRevisions(patientId);
         }
     }
 
@@ -51,23 +51,37 @@ export class PatientDetailComponent implements OnInit {
         this.patientService.getPacienteById(id).subscribe({
             next: (data) => {
                 this.patient = data;
+                this.loadRevisions(); // Load revisions after patient is loaded
             },
             error: (err) => console.error('Error al cargar paciente', err)
         });
     }
 
-    loadRevisions(id: number) {
-        console.log('Cargando revisiones del paciente:', id);
-        this.revisionService.getRevisionesByPaciente(id).subscribe({
-            next: (data) => {
-                console.log('Revisiones recibidas:', data);
-                this.revisions = data;
-                if (this.revisions.length > 0) {
-                    // Opcional: seleccionar la última por defecto
-                }
-            },
-            error: (err) => console.error('Error cargando revisiones:', err)
-        });
+    loadRevisions() {
+        if (this.patient?.id) {
+            this.revisionService.getRevisionesByPaciente(this.patient.id).subscribe({
+                next: (data) => {
+                    this.revisions = data;
+                    this.checkSelectedRevisionParam();
+                },
+                error: (err) => console.error('Error cargando revisiones:', err)
+            });
+        }
+    }
+
+    private checkSelectedRevisionParam() {
+        // Verificar si hay un ID de revisión en los query params para seleccionarlo
+        const selectedIdParam = this.route.snapshot.queryParamMap.get('selectedRevisionId');
+        if (selectedIdParam) {
+            const idToSelect = Number(selectedIdParam);
+            const revisionToSelect = this.revisions.find(r => r.id === idToSelect);
+            if (revisionToSelect) {
+                this.selectRevision(revisionToSelect);
+
+                // Limpiar el query param para que no persista al recargar si no se desea
+                // this.router.navigate([], { queryParams: { selectedRevisionId: null }, queryParamsHandling: 'merge' });
+            }
+        }
     }
 
     selectRevision(rev: Revision) {

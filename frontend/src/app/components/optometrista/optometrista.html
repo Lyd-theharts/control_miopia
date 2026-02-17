@@ -1,0 +1,122 @@
+<div class="container-fluid bg-yellow-theme min-vh-100 d-flex flex-column">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center p-4">
+        <h2 class="text-purple fw-bold m-0">Gestión de Optometristas</h2>
+        <i class="bi bi-arrow-return-left btn-back" (click)="goBack()" title="Volver"></i>
+    </div>
+
+    <!-- Body -->
+    <div class="container flex-grow-1">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="m-0 text-purple fw-bold">Listado de Profesionales</h5>
+                        <button class="btn btn-primary-custom" (click)="openCreateModal()">
+                            <i class="bi bi-plus-lg me-2"></i>Nuevo Optometrista
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        @if (loading) {
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-purple" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                        </div>
+                        } @else if (optometristas.length === 0) {
+                        <div class="text-center py-5 text-muted">
+                            <p>No hay optometristas registrados.</p>
+                        </div>
+                        } @else {
+                        <div class="list-group list-group-flush">
+                            @for (opt of optometristas; track opt.id) {
+                            <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                <div>
+                                    <h6 class="mb-0 fw-bold text-dark">{{ opt.nombreCompleto }}</h6>
+                                    <small class="text-muted">Nº Colegiado: {{ opt.numeroColegiado }}</small>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-primary" (click)="openEditModal(opt)"
+                                        title="Editar">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" (click)="openDeleteModal(opt)"
+                                        title="Eliminar">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            }
+                        </div>
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- MODAL FORMULARIO (CREAR/EDITAR) -->
+    @if (isFormModalOpen) {
+    <div class="modal-overlay">
+        <div class="modal-content-custom">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="text-purple fw-bold mb-0">
+                    {{ isEditing ? 'Editar Optometrista' : 'Nuevo Optometrista' }}
+                </h3>
+                <button class="btn-close" (click)="closeFormModal()"></button>
+            </div>
+
+            <form [formGroup]="optometristaForm" (ngSubmit)="onSubmitForm()">
+                <!-- Nombre Completo -->
+                <div class="mb-3">
+                    <label class="form-label text-purple fw-bold">Nombre Completo *</label>
+                    <input type="text" class="form-control" formControlName="nombreCompleto"
+                        placeholder="Ej. María García"
+                        [class.is-invalid]="optometristaForm.get('nombreCompleto')?.invalid && optometristaForm.get('nombreCompleto')?.touched">
+                    <div class="invalid-feedback">El nombre es requerido (min 3 caracteres).</div>
+                </div>
+
+                <!-- Número Colegiado -->
+                <div class="mb-4">
+                    <label class="form-label text-purple fw-bold">Número Colegiado *</label>
+                    <input type="text" class="form-control" formControlName="numeroColegiado" placeholder="Ej. 12345"
+                        [class.is-invalid]="optometristaForm.get('numeroColegiado')?.invalid && optometristaForm.get('numeroColegiado')?.touched">
+                    <div class="invalid-feedback">El número de colegiado es requerido.</div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-3 mt-4">
+                    <button type="button" class="btn btn-secondary-custom" (click)="closeFormModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary-custom">
+                        <i class="bi bi-save me-2"></i>Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    }
+
+    <!-- MODAL ELIMINAR -->
+    @if (isDeleteModalOpen) {
+    <div class="modal-overlay">
+        <div class="modal-content-custom text-center">
+            <div class="mb-3">
+                <i class="bi bi-exclamation-circle text-danger display-1"></i>
+            </div>
+            <h3 class="fw-bold mb-3">¿Estás seguro?</h3>
+            <p class="text-muted mb-4">
+                Vas a eliminar al optometrista <strong>{{ selectedOptometrista?.nombreCompleto }}</strong>.
+                Esta acción no se puede deshacer.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <button class="btn btn-secondary-custom" (click)="closeDeleteModal()">Cancelar</button>
+                <button class="btn btn-danger text-white px-4" (click)="confirmDelete()">
+                    <i class="bi bi-trash-fill me-2"></i>Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+
+</div>

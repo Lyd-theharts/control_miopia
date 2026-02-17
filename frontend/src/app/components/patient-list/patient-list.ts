@@ -26,10 +26,10 @@ export class PatientListComponent implements OnInit {
 
     searchControl = new FormControl('');
 
-    // Estado del Modal
+    // Add check to show/hide modal
     isModalOpen = false;
 
-    // Formulario de Paciente
+    // Formulario reactivo para crear paciente
     patientForm = new FormGroup({
         nombre: new FormControl('', [Validators.required]),
         apellidos: new FormControl('', [Validators.required]),
@@ -70,6 +70,10 @@ export class PatientListComponent implements OnInit {
 
     goBack() {
         this.router.navigate(['/dashboard']);
+    }
+
+    goToOptometristas() {
+        this.router.navigate(['/optometristas']);
     }
 
     getInitials(nombre: string, apellidos?: string): string {

@@ -25,4 +25,14 @@ public class OptometristaController {
     public Optometrista crear(@RequestBody Optometrista optometrista) {
         return optometristaService.guardar(optometrista);
     }
+
+    @PutMapping("/{id}")
+    public Optometrista actualizar(@PathVariable Long id, @RequestBody Optometrista optometrista) {
+        return optometristaService.actualizar(id, optometrista);
+    }
+
+    @DeleteMapping("/{id}")
+    public void eliminar(@PathVariable Long id) {
+        optometristaService.eliminar(id);
+    }
 }

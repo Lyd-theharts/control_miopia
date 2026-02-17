@@ -22,6 +22,6 @@ public class Optometrista {
     // Esto crea la columna 'clinica_id' en la base de datos automáticamente
     @ManyToOne
     @JoinColumn(name = "clinica_id", nullable = false)
-    @JsonIgnore
+    // @JsonIgnore
     private Clinica clinica;
 }

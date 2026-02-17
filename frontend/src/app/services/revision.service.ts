@@ -26,10 +26,25 @@ export class RevisionService {
         return this.http.post<Revision>(this.urlBase, revision);
     }
 
-    // 4. Obtener Optometristas por Clínica (Nuevo)
+    // --- OPTOMETRISTAS ---
+
     getOptometristasByClinica(clinicaId: number): Observable<any[]> {
         return this.http.get<any[]>(`http://localhost:9090/api/optometristas?clinicaId=${clinicaId}`);
     }
+
+    createOptometrista(optometrista: any): Observable<any> {
+        return this.http.post<any>('http://localhost:9090/api/optometristas', optometrista);
+    }
+
+    updateOptometrista(id: number, optometrista: any): Observable<any> {
+        return this.http.put<any>(`http://localhost:9090/api/optometristas/${id}`, optometrista);
+    }
+
+    deleteOptometrista(id: number): Observable<void> {
+        return this.http.delete<void>(`http://localhost:9090/api/optometristas/${id}`);
+    }
+
+    // --- REVISIONES (CRUD) ---
 
     // 4. Actualizar Revisión
     updateRevision(id: number, revision: Revision): Observable<Revision> {

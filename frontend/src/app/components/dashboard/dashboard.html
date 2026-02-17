@@ -11,6 +11,7 @@
         <div class="col-12">
             <h1 class="text-white mb-5">Área Clínica</h1>
 
+            <!-- Main Actions Row -->
             <div class="d-flex justify-content-center gap-4 flex-wrap mb-5">
                 <!-- Patient List Button -->
                 <button routerLink="/pacientes"
@@ -20,18 +21,34 @@
                 </button>
 
                 <!-- New Client Button -->
-                <button (click)="navigateToNewPatient()"
+                <button (click)="navigate('nuevo-paciente')"
                     class="btn btn-dashboard p-4 d-flex flex-column align-items-center justify-content-center">
                     <i class="bi bi-person-plus-fill fs-1 mb-3"></i>
                     <span class="fs-4">Nuevo Paciente</span>
                 </button>
             </div>
 
-            <!-- Decorative Image -->
+            <!-- Lower Section: Image -->
             <div class="mt-4">
                 <img src="https://media.allaboutvision.com/cms/caas/v1/media/586460/data/picture/d63f2952cdc1721d445cfd46f6e35e55.jpg"
                     alt="Control de Miopía" class="img-fluid rounded shadow-lg"
-                    style="max-width: 600px; border: 4px solid white;">
+                    style="max-width: 500px; border: 4px solid white;">
+            </div>
+
+            <!-- Admin Action: Optometristas (Bottom Right Fixed) -->
+            <div class="position-absolute bottom-0 end-0 p-4">
+                <button routerLink="/optometristas"
+                    class="btn btn-outline-light p-3 d-flex align-items-center gap-3 shadow-sm admin-btn"
+                    style="border: 2px solid rgba(255,255,255,0.3); backdrop-filter: blur(5px); background: rgba(255,255,255,0.1);">
+                    <div class="bg-white text-purple rounded-circle d-flex justify-content-center align-items-center"
+                        style="width: 50px; height: 50px;">
+                        <i class="bi bi-person-badge-fill fs-4"></i>
+                    </div>
+                    <div class="text-start text-white">
+                        <h5 class="m-0 fw-bold">Gestión</h5>
+                        <small class="opacity-75">Optometristas</small>
+                    </div>
+                </button>
             </div>
         </div>
     </div>
