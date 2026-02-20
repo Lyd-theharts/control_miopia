@@ -1,0 +1,49 @@
+<div class="myopia-chart-container" [class.h-100]="isZoomed" [class.d-flex]="isZoomed" [class.flex-column]="isZoomed">
+    <!-- Tarjeta de Gráfica -->
+    <div class="card shadow border-0 mb-3 graph-card" [class.flex-grow-1]="isZoomed" (click)="chartClick.emit()"
+        [style.cursor]="!isZoomed ? 'pointer' : 'default'">
+        <div class="card-header bg-white text-purple fw-bold d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-graph-up me-2"></i>Evolución Percentil (Tideman)</span>
+            <small *ngIf="!isZoomed" class="text-muted"><i class="bi bi-zoom-in me-1"></i>Clic para ampliar</small>
+        </div>
+        <div class="card-body bg-light position-relative" [style.height]="isZoomed ? '100%' : '350px'">
+            <canvas #myopiaChart></canvas>
+        </div>
+    </div>
+
+    <!-- Tarjeta de Diagnóstico / Alerta -->
+    @if (nivelRiesgo) {
+    <div class="card shadow border-0 border-start border-4 {{ claseAlertaBorder }}">
+        <div class="card-body {{ claseAlertaBg }}">
+            <h5 class="{{ claseAlertaText }} fw-bold"><i class="bi bi-heart-pulse-fill me-2"></i>Diagnóstico y Alertas
+            </h5>
+            <div class="mb-3 d-flex flex-wrap gap-2">
+                <span class="badge bg-white {{ claseAlertaText }} fs-6 border {{ claseAlertaBorder }}">Riesgo: {{
+                    nivelRiesgo }}</span>
+                @if (activeRevision?.tratamientoActual && activeRevision?.tratamientoActual !== 'NINGUNO') {
+                <span class="badge bg-purple text-white fs-6 border border-purple"><i
+                        class="bi bi-capsule me-1"></i>Tratamiento: {{ activeRevision?.tratamientoActual }}</span>
+                }
+            </div>
+
+            <div class="alert {{ claseAlertaBorder }} d-flex align-items-center mb-2 p-0 bg-transparent text-dark border-0"
+                role="alert">
+                <i class="bi {{ iconoAlerta }} flex-shrink-0 me-2" [ngClass]="claseAlertaText"></i>
+                <div>
+                    <strong>{{ nivelRiesgo === 'NORMAL' ? 'Controlado' : '¡Atención!' }}</strong> {{ mensajeRiesgo }}
+                </div>
+            </div>
+
+            @if (activeRevision?.alertasSistema) {
+            <div class="alert alert-danger d-flex align-items-center mb-0 mt-2 p-2 border-danger bg-danger-subtle text-danger"
+                role="alert">
+                <i class="bi bi-exclamation-octagon-fill flex-shrink-0 me-2"></i>
+                <div>
+                    <strong>Alerta Acomodativa:</strong> {{ activeRevision?.alertasSistema }}
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+    }
+</div>

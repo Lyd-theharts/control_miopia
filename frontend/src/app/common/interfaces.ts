@@ -32,6 +32,7 @@ export interface Revision {
     id?: number; // Opcional al crear
     fechaRevision: string;
     anamnesis?: string;
+    edadExacta?: number;
 
     // 1. REFRACCIÓN
     odEsfera?: number;

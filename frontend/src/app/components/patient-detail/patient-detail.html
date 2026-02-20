@@ -87,7 +87,7 @@
                             <i class="bi bi-pencil-fill me-1"></i>Editar
                         </button>
                     </div>
-                    <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+                    <div class="card-body" style="max-height: 75vh; overflow-y: auto;">
                         <!-- General -->
                         <div class="mb-3">
                             <p class="mb-1"><strong>Fecha:</strong> {{ selectedRevision.fechaRevision |
@@ -194,44 +194,8 @@
 
             <!-- RIGHT: Graphs & Diagnosis -->
             <div class="col-md-7 mb-4">
-                <!-- Graph Placeholder (Clickable) -->
-                <div class="card shadow border-0 mb-3 graph-card" (click)="toggleGraphZoom()">
-                    <div class="card-header bg-white text-purple fw-bold d-flex justify-content-between">
-                        <span><i class="bi bi-graph-up me-2"></i>Evolución Percentil</span>
-                        <small class="text-muted"><i class="bi bi-zoom-in me-1"></i>Clic para ampliar</small>
-                    </div>
-                    <div class="card-body text-center bg-light graph-body"
-                        style="height: 250px; display: flex; align-items: center; justify-content: center; position: relative;">
-                        <i class="bi bi-bar-chart-line text-muted" style="font-size: 4rem;"></i>
-                        <p class="text-muted ms-3">Gráfica de Evolución</p>
-                    </div>
-                </div>
-
-                <!-- Diagnosis Card (Highlighted) -->
-                <div class="card shadow border-0 border-start border-4 border-danger">
-                    <div class="card-body bg-danger-subtle">
-                        <h5 class="text-danger fw-bold"><i class="bi bi-heart-pulse-fill me-2"></i>Diagnóstico y Alertas
-                        </h5>
-
-                        <div class="mb-2">
-                            <span class="badge bg-warning text-dark fs-6 mb-2">{{ selectedRevision.tratamientoActual ||
-                                'Ninguno' }}</span>
-                        </div>
-
-                        @if (selectedRevision.alertasSistema) {
-                        <div class="alert alert-danger d-flex align-items-center mb-0" role="alert">
-                            <i class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"></i>
-                            <div>
-                                <strong>¡Atención!</strong> {{ selectedRevision.alertasSistema }}
-                            </div>
-                        </div>
-                        } @else {
-                        <p class="text-success fw-bold mb-0">
-                            <i class="bi bi-check-circle-fill me-1"></i> Sin alertas de progresión rápida.
-                        </p>
-                        }
-                    </div>
-                </div>
+                <app-myopia-chart [patient]="patient" [revisions]="revisions"
+                    [selectedRevision]="selectedRevision || null" (chartClick)="toggleGraphZoom()"></app-myopia-chart>
             </div>
         </div>
         }
@@ -343,16 +307,15 @@
 <!-- GRAPH ZOOM OVERLAY -->
 @if (isGraphZoomed) {
 <div class="graph-zoom-overlay" (click)="toggleGraphZoom()">
-    <div class="graph-zoomed" (click)="$event.stopPropagation()">
+    <div class="graph-zoomed d-flex flex-column" (click)="$event.stopPropagation()"
+        style="height: 90vh; width: 90vw; max-width: 1400px; padding: 2rem;">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="text-purple fw-bold m-0"><i class="bi bi-graph-up me-2"></i>Evolución Detallada</h3>
             <button class="btn-close fs-4" (click)="toggleGraphZoom()"></button>
         </div>
-        <!-- Placeholder Expanded -->
-        <div class="w-100 h-100 bg-light rounded d-flex flex-column align-items-center justify-content-center p-5">
-            <i class="bi bi-bar-chart-line text-muted" style="font-size: 8rem;"></i>
-            <h4 class="text-muted mt-3">Gráfica Interactiva Ampliada</h4>
-            <p class="text-muted">Aquí se mostrará la evolución detallada de la Línea Axial y Refracción.</p>
+        <div class="flex-grow-1 position-relative">
+            <app-myopia-chart [patient]="patient" [revisions]="revisions" [selectedRevision]="selectedRevision || null"
+                [isZoomed]="true"></app-myopia-chart>
         </div>
     </div>
 </div>

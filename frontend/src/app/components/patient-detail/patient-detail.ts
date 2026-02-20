@@ -6,11 +6,12 @@ import { RevisionService } from '../../services/revision.service';
 import { AuthService } from '../../services/auth';
 import { Paciente, Revision } from '../../common/interfaces';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MyopiaChartComponent } from '../myopia-chart/myopia-chart';
 
 @Component({
     selector: 'app-patient-detail',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, MyopiaChartComponent],
     templateUrl: './patient-detail.html',
     styleUrl: './patient-detail.css'
 })
