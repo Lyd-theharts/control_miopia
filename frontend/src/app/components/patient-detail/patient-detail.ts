@@ -61,7 +61,12 @@ export class PatientDetailComponent implements OnInit {
         if (this.patient?.id) {
             this.revisionService.getRevisionesByPaciente(this.patient.id).subscribe({
                 next: (data) => {
-                    this.revisions = data;
+                    // Orden de fecha descendente (la más reciente primero)
+                    this.revisions = data.sort((a, b) => {
+                        const dateA = new Date(a.fechaRevision || 0).getTime();
+                        const dateB = new Date(b.fechaRevision || 0).getTime();
+                        return dateB - dateA;
+                    });
                     this.checkSelectedRevisionParam();
                 },
                 error: (err) => console.error('Error cargando revisiones:', err)
