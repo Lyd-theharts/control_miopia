@@ -168,8 +168,8 @@ export class MyopiaChartComponent implements OnChanges, AfterViewInit {
       this.chartInstance.destroy();
     }
 
-    const dataPaciente = this.revisions
-      .filter(r => (r.odLongitudAxial !== undefined || r.oiLongitudAxial !== undefined))
+    const dataPacienteOD = this.revisions
+      .filter(r => r.odLongitudAxial !== undefined && r.odLongitudAxial !== null)
       .map(r => {
         let edad = r.edadExacta;
         if (edad == null && this.patient?.fechaNacimiento) {
@@ -177,18 +177,31 @@ export class MyopiaChartComponent implements OnChanges, AfterViewInit {
           const fr = new Date(r.fechaRevision);
           edad = (fr.getTime() - fn.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
         }
-
-        const laOD = r.odLongitudAxial;
-        const laOI = r.oiLongitudAxial;
-        const la = laOD !== undefined ? laOD : laOI;
-
         return {
           x: edad || 0,
-          y: la || 0,
+          y: r.odLongitudAxial || 0,
           raw: r
         };
       })
-      .filter(p => p.x >= 6 && p.x <= 18 && p.y > 0)
+      .filter(p => p.x >= 5 && p.x <= 18 && p.y > 0)
+      .sort((a, b) => a.x - b.x);
+
+    const dataPacienteOI = this.revisions
+      .filter(r => r.oiLongitudAxial !== undefined && r.oiLongitudAxial !== null)
+      .map(r => {
+        let edad = r.edadExacta;
+        if (edad == null && this.patient?.fechaNacimiento) {
+          const fn = new Date(this.patient.fechaNacimiento);
+          const fr = new Date(r.fechaRevision);
+          edad = (fr.getTime() - fn.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+        }
+        return {
+          x: edad || 0,
+          y: r.oiLongitudAxial || 0,
+          raw: r
+        };
+      })
+      .filter(p => p.x >= 5 && p.x <= 18 && p.y > 0)
       .sort((a, b) => a.x - b.x);
 
     const config: ChartConfiguration = {
@@ -241,10 +254,22 @@ export class MyopiaChartComponent implements OnChanges, AfterViewInit {
             order: 1
           },
           {
-            label: 'Paciente (L.A. mm)',
-            data: dataPaciente as any,
-            borderColor: '#54366A',
-            backgroundColor: '#FF5722',
+            label: 'Ojo Derecho (OD)',
+            data: dataPacienteOD as any,
+            borderColor: '#3F51B5', // Indigo para OD
+            backgroundColor: '#3F51B5',
+            pointRadius: 6,
+            pointHoverRadius: 8,
+            borderWidth: 3,
+            fill: false,
+            tension: 0.1,
+            order: 0
+          },
+          {
+            label: 'Ojo Izquierdo (OI)',
+            data: dataPacienteOI as any,
+            borderColor: '#E91E63', // Rosa/Rojo para OI
+            backgroundColor: '#E91E63',
             pointRadius: 6,
             pointHoverRadius: 8,
             borderWidth: 3,
@@ -260,7 +285,7 @@ export class MyopiaChartComponent implements OnChanges, AfterViewInit {
         scales: {
           x: {
             type: 'linear',
-            min: 6,
+            min: 5,
             max: 18,
             title: {
               display: true,
@@ -292,9 +317,10 @@ export class MyopiaChartComponent implements OnChanges, AfterViewInit {
           tooltip: {
             callbacks: {
               label: (context) => {
-                if (context.datasetIndex === 4) { // Paciente
+                if (context.datasetIndex >= 4) { // Índices 4 y 5 son OD y OI
                   const raw = (context.raw as any).raw;
-                  let str = `L.A.: ${context.parsed.y} mm`;
+                  const datasetLabel = context.dataset.label;
+                  let str = `${datasetLabel}: ${context.parsed.y} mm`;
                   if (raw && raw.fechaRevision) {
                     const date = new Date(raw.fechaRevision);
                     str += ` - ${date.toLocaleDateString()}`;
