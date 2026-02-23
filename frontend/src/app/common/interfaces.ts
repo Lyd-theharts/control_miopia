@@ -68,3 +68,24 @@ export interface Revision {
     paciente?: { id: number }; // Objeto anidado
     optometrista?: { id: number }; // Objeto anidado
 }
+
+export interface Clinica {
+    id: number;
+    nombre: string;
+    direccion?: string;
+    telefono?: string;
+    email?: string;
+}
+
+export interface Cita {
+    id?: number;
+    fechaHora: string;
+    motivo?: string;
+    estado: string;
+    notas?: string;
+
+    // RELACIONES Mapeando a los IDs
+    paciente?: { id: number, nombre?: string, apellidos?: string };
+    clinica?: { id: number, nombre?: string };
+    optometrista?: { id: number, nombreCompleto?: string };
+}

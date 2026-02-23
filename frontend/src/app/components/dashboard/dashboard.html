@@ -11,29 +11,108 @@
         <div class="col-12">
             <h1 class="text-white mb-5">Área Clínica</h1>
 
-            <!-- Main Actions Row -->
-            <div class="d-flex justify-content-center gap-4 flex-wrap mb-5">
+            <!-- Main Actions Row (3 Buttons Centered) -->
+            <div class="d-flex justify-content-center align-items-stretch gap-4 flex-wrap mb-5 w-100 px-3">
+
                 <!-- Patient List Button -->
                 <button routerLink="/pacientes"
-                    class="btn btn-dashboard p-4 d-flex flex-column align-items-center justify-content-center">
+                    class="btn btn-dashboard p-4 d-flex flex-column align-items-center justify-content-center flex-fill"
+                    style="max-width: 320px;">
                     <i class="bi bi-people-fill fs-1 mb-3"></i>
                     <span class="fs-4">Lista de Pacientes</span>
                 </button>
 
                 <!-- New Client Button -->
                 <button (click)="navigate('nuevo-paciente')"
-                    class="btn btn-dashboard p-4 d-flex flex-column align-items-center justify-content-center">
+                    class="btn btn-dashboard p-4 d-flex flex-column align-items-center justify-content-center flex-fill"
+                    style="max-width: 320px;">
                     <i class="bi bi-person-plus-fill fs-1 mb-3"></i>
                     <span class="fs-4">Nuevo Paciente</span>
                 </button>
+
+                <!-- Today's Appointments Widget -->
+                <button (click)="openCalendar()"
+                    class="btn btn-widget p-4 d-flex flex-column align-items-center justify-content-start flex-fill position-relative overflow-hidden shadow-lg h-100"
+                    style="max-width: 320px;">
+
+                    <div class="d-flex w-100 justify-content-between align-items-center mb-3">
+                        <h3 class="fw-bold mb-0 text-start" style="font-size: 1.4rem;">Citas de Hoy</h3>
+                        <span class="badge bg-white text-purple fs-6 rounded-pill shadow-sm px-3 py-2">
+                            {{ citasHoy.length }}
+                        </span>
+                    </div>
+
+                    <div class="w-100 text-start z-1">
+                        @if (citasHoy.length > 0) {
+                        <ul class="list-unstyled mb-0 w-100">
+                            @for (cita of citasHoy | slice:0:3; track cita.id) {
+                            <li class="mb-2 pb-2 border-bottom border-light border-opacity-25 d-flex align-items-center justify-content-between cita-hoy-item"
+                                style="cursor: pointer; transition: background-color 0.2s; border-radius: 6px; padding: 4px;"
+                                onmouseover="this.style.backgroundColor='rgba(255,255,255,0.1)'"
+                                onmouseout="this.style.backgroundColor='transparent'"
+                                (click)="goToPatient(cita, $event)">
+                                <div class="text-truncate flex-grow-1 text-dark fw-bold" style="font-size: 0.95rem;">
+                                    <i class="bi bi-person-fill me-1 opacity-75"></i>
+                                    {{ cita.paciente?.nombre }} {{ cita.paciente?.apellidos | slice:0:1 }}.
+                                </div>
+                                <span class="badge bg-purple text-white ms-2" style="font-size: 0.8rem;">
+                                    <i class="bi bi-clock-fill me-1"></i>{{ cita.fechaHora | date:'HH:mm' }}
+                                </span>
+                            </li>
+                            }
+                        </ul>
+                        @if (citasHoy.length > 3) {
+                        <div class="text-center mt-2 small text-dark fw-bold opacity-75">+ {{ citasHoy.length - 3 }} más
+                        </div>
+                        }
+                        } @else {
+                        <div class="text-center opacity-75 mt-3">
+                            <i class="bi bi-calendar-check fs-1 mb-2 d-block"></i>
+                            <span class="fw-medium text-dark">No hay citas para hoy</span>
+                        </div>
+                        }
+                    </div>
+
+                    <div class="mt-auto w-100 text-end pt-3 z-1">
+                        <span class="fw-bold small text-dark opacity-75 hover-underline">Abrir Calendario <i
+                                class="bi bi-arrow-up-right ms-1"></i></span>
+                    </div>
+
+                    <!-- Decorative background accents -->
+                    <div class="position-absolute bg-white opacity-25 rounded-circle"
+                        style="width: 150px; height: 150px; top: -50px; right: -50px;"></div>
+                    <div class="position-absolute bg-white opacity-25 rounded-circle"
+                        style="width: 100px; height: 100px; bottom: -20px; left: -20px;"></div>
+                </button>
+
             </div>
 
-            <!-- Lower Section: Image -->
-            <div class="mt-4">
+            <!-- Lower Section: Image Centered -->
+            <div class="d-flex justify-content-center mt-2 w-100 px-4">
                 <img src="https://media.allaboutvision.com/cms/caas/v1/media/586460/data/picture/d63f2952cdc1721d445cfd46f6e35e55.jpg"
                     alt="Control de Miopía" class="img-fluid rounded shadow-lg"
-                    style="max-width: 500px; border: 4px solid white;">
+                    style="max-width: 600px; border: 4px solid white; object-fit: cover; aspect-ratio: 16/9;">
             </div>
+
+            <!-- FULL CALENDAR MODAL -->
+            @if (isCalendarOpen) {
+            <div class="modal-overlay" (click)="closeCalendar()">
+                <div class="modal-content-custom bg-transparent shadow-none" style="max-width: 900px; padding: 0;"
+                    (click)="$event.stopPropagation()">
+
+                    <div class="d-flex justify-content-end mb-2">
+                        <button class="btn btn-light rounded-circle shadow p-2" (click)="closeCalendar()"
+                            style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-x-lg text-purple fs-5"></i>
+                        </button>
+                    </div>
+
+                    <!-- Usar el componente refactorizado a la versión full (restauraremos su css y html previos en el siguiente paso) -->
+                    <app-dashboard-calendar class="w-100 shadow-lg rounded"
+                        style="display: block;"></app-dashboard-calendar>
+                </div>
+            </div>
+            }
 
             <!-- Admin Action: Optometristas (Bottom Right Fixed) -->
             <div class="position-absolute bottom-0 end-0 p-4">

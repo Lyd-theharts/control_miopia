@@ -1,0 +1,62 @@
+<div class="card shadow border-0 dashboard-calendar-card h-100">
+    <div class="card-header bg-white pb-0 border-0 d-flex justify-content-between align-items-center">
+        <h5 class="fw-bold text-purple mb-0">
+            <i class="bi bi-calendar-event text-warning me-2"></i>Agenda Clínica
+        </h5>
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-sm btn-action rounded-circle" (click)="previousMonth()">
+                <i class="bi bi-chevron-left text-purple"></i>
+            </button>
+            <h6 class="mb-0 fw-bold text-dark text-center" style="min-width: 130px; font-size: 0.95rem;">
+                {{ currentMonthName }} <span class="text-purple">{{ currentYear }}</span>
+            </h6>
+            <button class="btn btn-sm btn-action rounded-circle" (click)="nextMonth()">
+                <i class="bi bi-chevron-right text-purple"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="card-body pt-3">
+        <!-- Nombres de los días de la semana -->
+        <div class="row g-0 mb-2 text-center text-muted fw-bold week-header" style="font-size: 0.85rem;">
+            <div class="col" *ngFor="let day of weekDays">{{ day }}</div>
+        </div>
+
+        <!-- Rejilla del calendario -->
+        <div class="calendar-grid">
+            <div class="calendar-cell" *ngFor="let day of calendarDays" [ngClass]="{
+          'text-muted bg-light': !day.isCurrentMonth,
+          'bg-white text-dark': day.isCurrentMonth,
+          'today-cell': day.isToday
+        }">
+                <div class="d-flex justify-content-between align-items-start px-2 py-1">
+                    <span class="day-number fw-medium"
+                        [ngClass]="{'bg-purple text-white rounded-circle px-2': day.isToday}">
+                        {{ day.date.getDate() }}
+                    </span>
+                    <span class="badge rounded-pill bg-warning text-dark" *ngIf="day.citas.length > 0"
+                        style="font-size: 0.70rem;">
+                        {{ day.citas.length }} citas
+                    </span>
+                </div>
+
+                <!-- Citas Listadas -->
+                <div class="citas-container px-1 pb-1">
+                    <div class="cita-badge small text-truncate rounded px-1 mb-1 shadow-sm"
+                        *ngFor="let cita of day.citas" [ngClass]="{
+              'bg-warning-subtle text-dark border border-warning': cita.estado === 'PENDIENTE',
+              'bg-success-subtle text-success border border-success': cita.estado === 'COMPLETADA',
+              'bg-secondary-subtle text-secondary border border-secondary': cita.estado === 'CANCELADA'
+            }" [title]="cita.motivo" style="cursor: pointer; transition: transform 0.2s;"
+                        onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"
+                        (click)="goToPatient(cita); $event.stopPropagation()">
+                        <i class="bi bi-clock me-1" style="font-size: 0.65rem;"></i>
+                        <span style="font-size: 0.7rem;" class="fw-bold">{{ cita.fechaHora | date:'HH:mm' }}</span>
+                        <span style="font-size: 0.7rem;">- {{ cita.paciente?.nombre }} {{ cita.paciente?.apellidos |
+                            slice:0:1 }}.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

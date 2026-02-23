@@ -5,18 +5,17 @@
     font-weight: bold;
     border: none;
     border-radius: 20px;
-    width: 200px;
-    height: 200px;
+    width: 100%;
+    min-height: 220px;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .btn-dashboard:hover {
     background-color: #ffea00;
-    transform: scale(1.1) translateY(-5px);
+    transform: scale(1.05) translateY(-5px);
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
     cursor: pointer;
-    transform: translateY(-5px);
     background-color: white;
     color: #6f42c1;
     border-color: #6f42c1;
@@ -28,6 +27,22 @@
 
 .btn-dashboard:hover i {
     transform: scale(1.2);
+}
+
+.btn-widget {
+    background: linear-gradient(135deg, #FFC107 0%, #FF9800 100%);
+    color: #4A148C;
+    border: none;
+    border-radius: 20px;
+    width: 100%;
+    min-height: 220px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-widget:hover {
+    transform: scale(1.05) translateY(-5px);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25);
 }
 
 .admin-btn {
@@ -51,4 +66,49 @@
     background-color: rgba(255, 255, 255, 0.2);
     transform: scale(1.05);
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Modal Overlay Centered */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.modal-content-custom {
+    width: 90%;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }

@@ -33,8 +33,8 @@ public class Paciente {
 
     // --- RELACIÓN DE SEGURIDAD ---
     // Un paciente PERTENECE a una clínica específica.
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "clinica_id", nullable = false)
-    // @JsonIgnore
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private Clinica clinica;
 }
