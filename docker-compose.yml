@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  db:
+    image: lydtheharts/miopia-db:latest
+    environment:
+      MYSQL_DATABASE: miopia_db
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3310:3306" 
+
+  backend:
+    image: lydtheharts/miopia-backend:latest
+    ports:
+      - "9090:9090"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/miopia_db?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ""
+
+  frontend:
+    image: lydtheharts/miopia-frontend:latest
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
